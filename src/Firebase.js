@@ -1,8 +1,7 @@
+import { getAuth, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBdv2UQRaTTJBVMDH__xSkOg4Rws7xZxjE",
@@ -17,31 +16,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-const signIn = (email, password) => {
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      toast.success('Logged in successfully!');
-    })
-    .catch((error) => {
-      if (error.code === 'auth/wrong-password') {
-        toast.error('Incorrect password!');
-      } else if (error.code === 'auth/user-not-found') {
-        toast.error('No user found with this email!');
-      } else {
-        toast.error('Login failed: ' + error.message);
-      }
-    });
-};
-
+const signIn = async (email, password) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast.success("Logged in successfully!");
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+  
+  const signUp = async (email, password) => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      toast.success("Account created successfully!");
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 const logout = () => {
-  signOut(auth)
-    .then(() => {
-      toast.success('Successfully logged out!');
-    })
-    .catch((error) => {
-      toast.error('Logout failed: ' + error.message);
-    });
+  return signOut(auth).then(() => toast.info("Logged out."));
 };
 
-export { auth, db, signIn, logout };
+export { auth, db, logout, signIn, signUp };

@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import './Login.css';
 import logo from '../../assets/logo.png';
 import { signIn } from '../../Firebase'; 
+import { signUp } from '../../Firebase'; 
 
 const Login = () => {
   const [signstate, setsignstate] = useState('Sign In');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (signstate === 'Sign In') {
-      signIn(email, password); 
+      await signIn(email, password);
+    } else {
+      await signUp(email, password);
     }
   };
 
